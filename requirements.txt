@@ -1,0 +1,21 @@
+numpy 
+pandas
+seaborn
+plotly
+matplotlib
+ipykernel
+scikit-learn
+pymongo
+dill
+from_root
+certifi
+PyYAML
+boto3 #aws
+mypy-boto3-s3 # aws
+botocore # aws
+fastapi
+python-multipart
+uvicorn
+jinja2
+imblearn
+#-e .
