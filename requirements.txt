@@ -19,4 +19,5 @@ uvicorn
 jinja2
 imblearn
 python-dotenv
+from_root
 #-e .
