@@ -20,4 +20,8 @@ jinja2
 imblearn
 python-dotenv
 from_root
+xgboost
+optuna
+lightgbm
+catboost
 #-e .
