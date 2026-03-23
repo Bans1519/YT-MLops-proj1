@@ -1,39 +1,44 @@
-import sys
 import logging
+import os
+from logging.handlers import RotatingFileHandler
+from from_root import from_root
+from datetime import datetime
 
-def error_message_detail(error, error_detail: sys):
+# Constants for log configuration
+LOG_DIR = 'logs'
+LOG_FILE = f"{datetime.now().strftime('%m_%d_%Y_%H_%M_%S')}.log"
+MAX_LOG_SIZE = 5 * 1024 * 1024  # 5 MB
+BACKUP_COUNT = 3  # Number of backup log files to keep
+
+# Construct log file path
+log_dir_path = os.path.join(from_root(), LOG_DIR)
+os.makedirs(log_dir_path, exist_ok=True)
+log_file_path = os.path.join(log_dir_path, LOG_FILE)
+
+def configure_logger():
     """
-    Extracts detailed error information including file name and line number.
+    Configures logging with a rotating file handler and a console handler.
     """
-    _, _, exc_tb = error_detail.exc_info()
+    # Create a custom logger
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+    
+    # Define formatter
+    formatter = logging.Formatter("[ %(asctime)s ] %(name)s - %(levelname)s - %(message)s")
 
-    # Fallback if this is called outside of an active exception context
-    if exc_tb is None:
-        return f"Error: {str(error)}"
+    # File handler with rotation
+    file_handler = RotatingFileHandler(log_file_path, maxBytes=MAX_LOG_SIZE, backupCount=BACKUP_COUNT)
+    file_handler.setFormatter(formatter)
+    file_handler.setLevel(logging.DEBUG)
+    
+    # Console handler
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(formatter)
+    console_handler.setLevel(logging.INFO)
+    
+    # Add handlers to the logger
+    logger.addHandler(file_handler)
+    logger.addHandler(console_handler)
 
-    trace_lines = ["\n" + "="*20 + " ERROR TRACE " + "="*20]
-
-    # Walking through the stack frames
-    while exc_tb is not None:
-        file_name = exc_tb.tb_frame.f_code.co_filename
-        line_number = exc_tb.tb_lineno
-        trace_lines.append(f"→ File: [{file_name}] | Line: [{line_number}]")
-        exc_tb = exc_tb.tb_next
-
-    trace_lines.append("="*53)
-    trace_lines.append(f"Root Cause: {str(error)}")
-    trace_lines.append("="*53 + "\n")
-
-    return "\n".join(trace_lines)
-
-class MyException(Exception):
-    def __init__(self, error_message, error_detail: sys):
-        """
-        :param error_message: error message in string or exception object
-        :param error_detail: sys module
-        """
-        super().__init__(error_message)
-        self.error_message = error_message_detail(error_message, error_detail)
-
-    def __str__(self):
-        return self.error_message
+# Configure the logger
+configure_logger()
