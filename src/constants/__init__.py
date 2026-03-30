@@ -34,6 +34,7 @@ DATA_INGESTION_INGESTED_DIR: str = "ingested"
 
 """Data Validation related constant start with DATA_VALIDATION_VAR_NAME
 """
-
+DATA_VALIDATION_DIR_NAME: str = "data_validation"
+DATA_VALIDATION_REPORT_FILE_NAME: str = "report.yaml"
 
 
